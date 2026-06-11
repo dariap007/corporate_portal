@@ -1,0 +1,54 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Создание заявки{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+    <a class="btn btn-outline-secondary btn-sm" href="{% url 'tickets_list' %}">Назад к заявкам</a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <h1 class="h3 mb-1">Создание заявки</h1>
+                <p class="text-muted mb-4">Опишите вопрос, а статус заявки будет установлен автоматически.</p>
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.title.id_for_label }}">{{ form.title.label }}</label>
+                        {{ form.title }}
+                        {{ form.title.errors }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.description.id_for_label }}">{{ form.description.label }}</label>
+                        {{ form.description }}
+                        {{ form.description.errors }}
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label" for="{{ form.ticket_type.id_for_label }}">{{ form.ticket_type.label }}</label>
+                            {{ form.ticket_type }}
+                            {{ form.ticket_type.errors }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="{{ form.priority.id_for_label }}">{{ form.priority.label }}</label>
+                            {{ form.priority }}
+                            {{ form.priority.errors }}
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <a class="btn btn-outline-secondary" href="{% url 'tickets_list' %}">Отмена</a>
+                        <button class="btn btn-primary" type="submit">Создать заявку</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

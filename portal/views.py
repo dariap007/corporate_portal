@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import get_object_or_404, redirect, render
 
+from .forms import TicketForm
 from .models import CorporateServiceLink, Department, Document, EmployeeProfile, News, Ticket
 
 
@@ -99,3 +100,36 @@ def documents_list_view(request):
         'search_query': search_query,
     }
     return render(request, 'portal/documents_list.html', context)
+
+
+@login_required
+def tickets_list_view(request):
+    if request.user.is_staff:
+        tickets = Ticket.objects.select_related('author').all()
+        page_title = 'Все заявки'
+        page_description = 'Администратор видит заявки всех сотрудников. Изменять статус и комментарий можно через Django Admin.'
+    else:
+        tickets = Ticket.objects.filter(author=request.user).select_related('author')
+        page_title = 'Мои заявки'
+        page_description = 'Здесь отображаются только заявки, созданные текущим пользователем.'
+
+    context = {
+        'tickets': tickets,
+        'page_title': page_title,
+        'page_description': page_description,
+    }
+    return render(request, 'portal/tickets_list.html', context)
+
+
+@login_required
+def ticket_create_view(request):
+    form = TicketForm(request.POST or None)
+
+    if request.method == 'POST' and form.is_valid():
+        ticket = form.save(commit=False)
+        ticket.author = request.user
+        ticket.status = Ticket.STATUS_NEW
+        ticket.save()
+        return redirect('tickets_list')
+
+    return render(request, 'portal/ticket_create.html', {'form': form})
