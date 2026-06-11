@@ -44,7 +44,7 @@
                             <td>{{ ticket.get_ticket_type_display }}</td>
                             <td>{{ ticket.get_priority_display }}</td>
                             <td>
-                                <span class="badge text-bg-primary">{{ ticket.get_status_display }}</span>
+                                <span class="badge {{ ticket.status_badge_class }}">{{ ticket.get_status_display }}</span>
                             </td>
                             <td>
                                 {% if ticket.admin_comment %}

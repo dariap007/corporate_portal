@@ -61,7 +61,7 @@
                             <div class="list-group-item px-0">
                                 <div class="d-flex justify-content-between gap-3">
                                     <div class="fw-semibold">{{ ticket.title }}</div>
-                                    <span class="badge text-bg-primary">{{ ticket.get_status_display }}</span>
+                                    <span class="badge {{ ticket.status_badge_class }}">{{ ticket.get_status_display }}</span>
                                 </div>
                                 <div class="small text-muted">{{ ticket.created_at|date:"d.m.Y H:i" }}</div>
                             </div>

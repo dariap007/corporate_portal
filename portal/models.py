@@ -98,7 +98,6 @@ class News(models.Model):
     def __str__(self):
         return self.title
 
-
 class DocumentCategory(models.Model):
     name = models.CharField('Название категории', max_length=100, unique=True)
 
@@ -133,7 +132,6 @@ class Document(models.Model):
 
     def __str__(self):
         return self.title
-
 
 class CorporateServiceLink(models.Model):
     title = models.CharField('Название сервиса', max_length=100)
@@ -219,3 +217,12 @@ class Ticket(models.Model):
 
     def __str__(self):
         return self.title
+
+    def status_badge_class(self):
+        classes = {
+            self.STATUS_NEW: 'text-bg-primary',
+            self.STATUS_IN_PROGRESS: 'text-bg-warning',
+            self.STATUS_COMPLETED: 'text-bg-success',
+            self.STATUS_REJECTED: 'text-bg-secondary',
+        }
+        return classes.get(self.status, 'text-bg-primary')
