@@ -1,0 +1,19 @@
+body {
+    background: #f4f7fb;
+}
+
+.login-page {
+    min-height: calc(100vh - 3rem);
+}
+
+.card {
+    border-radius: 8px;
+}
+
+.stat-card {
+    background: #ffffff;
+}
+
+.navbar-brand {
+    letter-spacing: 0;
+}

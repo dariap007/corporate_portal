@@ -1,0 +1,112 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h1 class="h3 mb-1">Здравствуйте, {{ user.first_name|default:user.username }}!</h1>
+    <p class="text-muted mb-0">Добро пожаловать на корпоративный портал группы компаний «Три Точки».</p>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card stat-card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="text-muted small">Новостей</div>
+                <div class="display-6 fw-semibold">{{ news_count }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card stat-card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="text-muted small">Документов</div>
+                <div class="display-6 fw-semibold">{{ documents_count }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card stat-card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="text-muted small">Активных заявок</div>
+                <div class="display-6 fw-semibold">{{ active_tickets_count }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <h2 class="h5 mb-3">Последние новости</h2>
+                {% for news in latest_news %}
+                    <div class="border-bottom pb-3 mb-3">
+                        <div class="d-flex justify-content-between gap-3">
+                            <h3 class="h6 mb-1">{{ news.title }}</h3>
+                            {% if news.is_important %}
+                                <span class="badge text-bg-danger">Важно</span>
+                            {% endif %}
+                        </div>
+                        <div class="small text-muted">
+                            {{ news.category }} · {{ news.publication_date|date:"d.m.Y" }}
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="text-muted mb-0">Новостей пока нет.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <h2 class="h5 mb-3">Быстрые ссылки</h2>
+                <div class="list-group list-group-flush">
+                    {% for link in service_links %}
+                        <a class="list-group-item list-group-item-action px-0" href="{{ link.url }}" target="_blank">
+                            <div class="fw-semibold">{{ link.title }}</div>
+                            <div class="small text-muted">{{ link.description }}</div>
+                        </a>
+                    {% empty %}
+                        <p class="text-muted mb-0">Ссылки пока не добавлены.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm mt-4">
+    <div class="card-body">
+        <h2 class="h5 mb-3">Активные заявки</h2>
+        {% if active_tickets %}
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead>
+                    <tr>
+                        <th>Тема</th>
+                        <th>Тип</th>
+                        <th>Приоритет</th>
+                        <th>Статус</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for ticket in active_tickets %}
+                        <tr>
+                            <td>{{ ticket.title }}</td>
+                            <td>{{ ticket.get_ticket_type_display }}</td>
+                            <td>{{ ticket.get_priority_display }}</td>
+                            <td><span class="badge text-bg-primary">{{ ticket.get_status_display }}</span></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-muted mb-0">Активных заявок нет.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
