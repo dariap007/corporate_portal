@@ -1,0 +1,46 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}{{ employee.full_name }}{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+    <a class="btn btn-outline-secondary btn-sm" href="{% url 'employees_list' %}">Назад к справочнику</a>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+            <div>
+                <h1 class="h3 mb-2">{{ employee.full_name }}</h1>
+                <div class="text-muted">{{ employee.position }}</div>
+            </div>
+            <span class="badge text-bg-light">{{ employee.get_status_display }}</span>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="text-muted small">Отдел</div>
+                <div class="fw-semibold">{{ employee.department|default:"Не указан" }}</div>
+            </div>
+            <div class="col-md-6">
+                <div class="text-muted small">Email</div>
+                <div class="fw-semibold">{{ employee.email }}</div>
+            </div>
+            <div class="col-md-6">
+                <div class="text-muted small">Телефон</div>
+                <div class="fw-semibold">{{ employee.phone|default:"Не указан" }}</div>
+            </div>
+            <div class="col-md-6">
+                <div class="text-muted small">Статус</div>
+                <div class="fw-semibold">{{ employee.get_status_display }}</div>
+            </div>
+            {% if employee.additional_contact %}
+                <div class="col-12">
+                    <div class="text-muted small">Дополнительные контакты</div>
+                    <div class="fw-semibold">{{ employee.additional_contact }}</div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

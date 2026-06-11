@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .models import CorporateServiceLink, Document, News, Ticket
+from .models import CorporateServiceLink, Department, Document, EmployeeProfile, News, Ticket
 
 
 def login_view(request):
@@ -52,3 +52,35 @@ def news_list_view(request):
 def news_detail_view(request, news_id):
     news = get_object_or_404(News.objects.select_related('category'), id=news_id)
     return render(request, 'portal/news_detail.html', {'news': news})
+
+
+@login_required
+def employees_list_view(request):
+    search_query = request.GET.get('q', '').strip()
+    department_id = request.GET.get('department', '').strip()
+
+    employees = EmployeeProfile.objects.select_related('department', 'user').all()
+    departments = Department.objects.all()
+
+    if search_query:
+        employees = employees.filter(full_name__icontains=search_query)
+
+    if department_id:
+        employees = employees.filter(department_id=department_id)
+
+    context = {
+        'employees': employees,
+        'departments': departments,
+        'search_query': search_query,
+        'selected_department': department_id,
+    }
+    return render(request, 'portal/employees_list.html', context)
+
+
+@login_required
+def employee_detail_view(request, employee_id):
+    employee = get_object_or_404(
+        EmployeeProfile.objects.select_related('department', 'user'),
+        id=employee_id,
+    )
+    return render(request, 'portal/employee_detail.html', {'employee': employee})
