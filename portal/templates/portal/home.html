@@ -66,7 +66,12 @@
     <div class="col-lg-5">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-body">
-                <h2 class="h5 mb-3">Быстрые ссылки</h2>
+                <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                    <h2 class="h5 mb-0">Быстрые ссылки</h2>
+                    {% if user.is_staff %}
+                        <a class="btn btn-outline-primary btn-sm" href="{% url 'management_service_links_list' %}">Настроить</a>
+                    {% endif %}
+                </div>
                 <div class="list-group list-group-flush">
                     {% for link in service_links %}
                         <a class="list-group-item list-group-item-action px-0" href="{{ link.url }}" target="_blank">

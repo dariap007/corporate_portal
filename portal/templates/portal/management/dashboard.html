@@ -1,0 +1,64 @@
+{% extends 'portal/management/base_management.html' %}
+
+{% block title %}Управление{% endblock %}
+{% block management_title %}Панель управления{% endblock %}
+{% block management_description %}Быстрый доступ к административным действиям через интерфейс портала.{% endblock %}
+
+{% block management_content %}
+<div class="row g-3">
+    <div class="col-md-6 col-xl-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="text-muted small">Новостей</div>
+                <div class="display-6 fw-semibold">{{ news_count }}</div>
+                <a class="btn btn-primary btn-sm mt-3" href="{% url 'management_news_list' %}">Управлять</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="text-muted small">Сотрудников</div>
+                <div class="display-6 fw-semibold">{{ employees_count }}</div>
+                <a class="btn btn-primary btn-sm mt-3" href="{% url 'management_employees_list' %}">Управлять</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="text-muted small">Подразделений</div>
+                <div class="display-6 fw-semibold">{{ departments_count }}</div>
+                <a class="btn btn-primary btn-sm mt-3" href="{% url 'management_departments_list' %}">Управлять</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="text-muted small">Документов</div>
+                <div class="display-6 fw-semibold">{{ documents_count }}</div>
+                <a class="btn btn-primary btn-sm mt-3" href="{% url 'management_documents_list' %}">Управлять</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="text-muted small">Корпоративных сервисов</div>
+                <div class="display-6 fw-semibold">{{ service_links_count }}</div>
+                <a class="btn btn-primary btn-sm mt-3" href="{% url 'management_service_links_list' %}">Управлять</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="text-muted small">Заявок</div>
+                <div class="display-6 fw-semibold">{{ tickets_count }}</div>
+                <a class="btn btn-primary btn-sm mt-3" href="{% url 'management_tickets_list' %}">Управлять</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

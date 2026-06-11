@@ -1,0 +1,51 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Управление документами{% endblock %}
+{% block management_title %}Управление документами{% endblock %}
+{% block management_description %}Добавление, редактирование и удаление ссылок на документы и материалы.{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+    <div>
+        <h1 class="h3 mb-1">Документы и база знаний</h1>
+        <p class="text-muted mb-0">Добавление, редактирование и удаление ссылок на документы и материалы.</p>
+    </div>
+    <a class="btn btn-outline-primary" href="{% url 'documents_list' %}">Открыть документы</a>
+</div>
+
+<div class="d-flex justify-content-end mb-3">
+    <a class="btn btn-primary" href="{% url 'management_document_create' %}">Добавить документ</a>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Категория</th>
+                    <th>Ссылка</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for document in documents %}
+                    <tr>
+                        <td>{{ document.title }}</td>
+                        <td>{{ document.category|default:"Без категории" }}</td>
+                        <td><a href="{{ document.link }}" target="_blank">{{ document.link }}</a></td>
+                        <td class="text-end">
+                            <a class="btn btn-outline-primary btn-sm" href="{% url 'management_document_edit' document.id %}">Редактировать</a>
+                            <a class="btn btn-outline-danger btn-sm" href="{% url 'management_document_delete' document.id %}">Удалить</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4" class="text-muted">Документов пока нет.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

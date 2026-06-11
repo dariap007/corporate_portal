@@ -17,17 +17,28 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="mainNavbar">
+            {% with current_url=request.resolver_match.url_name %}
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Главная</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'news_list' %}">Новости</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'employees_list' %}">Сотрудники</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'documents_list' %}">Документы</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'tickets_list' %}">Заявки</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}">Профиль</a></li>
-                {% if user.is_staff %}
-                    <li class="nav-item"><a class="nav-link" href="/admin/">Админка</a></li>
-                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link {% if current_url == 'home' %}active{% endif %}" href="{% url 'home' %}">Главная</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if current_url == 'news_list' or current_url == 'news_detail' or current_url == 'management_news_create' or current_url == 'management_news_edit' or current_url == 'management_news_delete' %}active{% endif %}" href="{% url 'news_list' %}">Новости</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if current_url == 'employees_list' or current_url == 'employee_detail' or current_url == 'management_employee_create' or current_url == 'management_employee_edit' or current_url == 'management_employee_delete' or current_url == 'management_departments_list' or current_url == 'management_department_create' or current_url == 'management_department_edit' or current_url == 'management_department_delete' %}active{% endif %}" href="{% url 'employees_list' %}">Сотрудники</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if current_url == 'documents_list' or current_url == 'management_document_create' or current_url == 'management_document_edit' or current_url == 'management_document_delete' %}active{% endif %}" href="{% url 'documents_list' %}">Документы</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if current_url == 'tickets_list' or current_url == 'ticket_create' or current_url == 'management_ticket_edit' %}active{% endif %}" href="{% url 'tickets_list' %}">Заявки</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if current_url == 'profile' or current_url == 'profile_edit' %}active{% endif %}" href="{% url 'profile' %}">Профиль</a>
+                </li>
             </ul>
+            {% endwith %}
             <div class="d-flex align-items-center gap-3 text-white">
                 <span class="small">{{ user.username }}</span>
                 <a class="btn btn-outline-light btn-sm" href="{% url 'logout' %}">Выйти</a>
@@ -38,6 +49,14 @@
 {% endif %}
 
 <main class="container py-4">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
     {% block content %}{% endblock %}
 </main>
 

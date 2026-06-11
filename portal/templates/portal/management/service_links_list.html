@@ -1,0 +1,51 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Управление сервисами{% endblock %}
+{% block management_title %}Управление корпоративными сервисами{% endblock %}
+{% block management_description %}Создание, редактирование и удаление быстрых ссылок на корпоративные сервисы.{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+    <div>
+        <h1 class="h3 mb-1">Корпоративные сервисы</h1>
+        <p class="text-muted mb-0">Создание, редактирование и удаление быстрых ссылок на корпоративные сервисы.</p>
+    </div>
+    <a class="btn btn-outline-primary" href="{% url 'home' %}">Назад на главную</a>
+</div>
+
+<div class="d-flex justify-content-end mb-3">
+    <a class="btn btn-primary" href="{% url 'management_service_link_create' %}">Добавить сервис</a>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Ссылка</th>
+                    <th>Метка</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for service_link in service_links %}
+                    <tr>
+                        <td>{{ service_link.title }}</td>
+                        <td><a href="{{ service_link.url }}" target="_blank">{{ service_link.url }}</a></td>
+                        <td>{{ service_link.icon_name|default:"-" }}</td>
+                        <td class="text-end">
+                            <a class="btn btn-outline-primary btn-sm" href="{% url 'management_service_link_edit' service_link.id %}">Редактировать</a>
+                            <a class="btn btn-outline-danger btn-sm" href="{% url 'management_service_link_delete' service_link.id %}">Удалить</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4" class="text-muted">Сервисов пока нет.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

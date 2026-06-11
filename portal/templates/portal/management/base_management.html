@@ -1,0 +1,19 @@
+{% extends 'portal/base.html' %}
+
+{% block content %}
+<div class="mb-4">
+    <h1 class="h3 mb-1">{% block management_title %}Управление{% endblock %}</h1>
+    <p class="text-muted mb-0">{% block management_description %}Административное действие в текущем разделе портала.{% endblock %}</p>
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% block management_content %}{% endblock %}
+{% endblock %}

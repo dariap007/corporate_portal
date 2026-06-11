@@ -1,0 +1,34 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}{{ page_title }}{% endblock %}
+{% block management_title %}{{ page_title }}{% endblock %}
+{% block management_description %}Укажите название, категорию, описание и ссылку на материал.{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+    <div>
+        <h1 class="h3 mb-1">{{ page_title }}</h1>
+        <p class="text-muted mb-0">Укажите название, категорию, описание и ссылку на материал.</p>
+    </div>
+    <a class="btn btn-outline-primary" href="{% url 'documents_list' %}">Назад к документам</a>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="mb-3">
+                    <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+            {% endfor %}
+            <div class="d-flex justify-content-end gap-2">
+                <a class="btn btn-outline-secondary" href="{% url 'documents_list' %}">Отмена</a>
+                <button class="btn btn-primary" type="submit">Сохранить</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

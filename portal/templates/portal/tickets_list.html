@@ -9,9 +9,6 @@
         <p class="text-muted mb-0">{{ page_description }}</p>
     </div>
     <div class="d-flex gap-2">
-        {% if user.is_staff %}
-            <a class="btn btn-outline-primary" href="/admin/portal/ticket/">Управлять в админке</a>
-        {% endif %}
         <a class="btn btn-primary" href="{% url 'ticket_create' %}">Создать заявку</a>
     </div>
 </div>
@@ -32,6 +29,9 @@
                         <th>Статус</th>
                         <th>Комментарий администратора</th>
                         <th>Дата создания</th>
+                        {% if user.is_staff %}
+                            <th></th>
+                        {% endif %}
                     </tr>
                     </thead>
                     <tbody>
@@ -54,6 +54,13 @@
                                 {% endif %}
                             </td>
                             <td>{{ ticket.created_at|date:"d.m.Y H:i" }}</td>
+                            {% if user.is_staff %}
+                                <td class="text-end">
+                                    <a class="btn btn-outline-primary btn-sm" href="{% url 'management_ticket_edit' ticket.id %}">
+                                        Изменить статус
+                                    </a>
+                                </td>
+                            {% endif %}
                         </tr>
                     {% endfor %}
                     </tbody>

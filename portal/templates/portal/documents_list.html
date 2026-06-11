@@ -3,9 +3,14 @@
 {% block title %}Документы{% endblock %}
 
 {% block content %}
-<div class="mb-4">
-    <h1 class="h3 mb-1">Документы и база знаний</h1>
-    <p class="text-muted mb-0">Инструкции, регламенты и полезные материалы для сотрудников.</p>
+<div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+    <div>
+        <h1 class="h3 mb-1">Документы и база знаний</h1>
+        <p class="text-muted mb-0">Инструкции, регламенты и полезные материалы для сотрудников.</p>
+    </div>
+    {% if user.is_staff %}
+        <a class="btn btn-primary" href="{% url 'management_document_create' %}">Добавить документ</a>
+    {% endif %}
 </div>
 
 <div class="card border-0 shadow-sm mb-4">
@@ -42,9 +47,19 @@
                     <div class="small text-muted mb-3">
                         Добавлено: {{ document.created_at|date:"d.m.Y" }}
                     </div>
-                    <a class="btn btn-outline-primary btn-sm" href="{{ document.link }}" target="_blank">
-                        Открыть материал
-                    </a>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a class="btn btn-outline-primary btn-sm" href="{{ document.link }}" target="_blank">
+                            Открыть материал
+                        </a>
+                        {% if user.is_staff %}
+                            <a class="btn btn-outline-secondary btn-sm" href="{% url 'management_document_edit' document.id %}">
+                                Редактировать
+                            </a>
+                            <a class="btn btn-outline-danger btn-sm" href="{% url 'management_document_delete' document.id %}">
+                                Удалить
+                            </a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
