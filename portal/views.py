@@ -1,7 +1,7 @@
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 
 from .models import CorporateServiceLink, Document, News, Ticket
 
@@ -40,3 +40,15 @@ def home_view(request):
         'active_tickets_count': user_tickets.filter(status__in=active_statuses).count(),
     }
     return render(request, 'portal/home.html', context)
+
+
+@login_required
+def news_list_view(request):
+    news_list = News.objects.select_related('category').all()
+    return render(request, 'portal/news_list.html', {'news_list': news_list})
+
+
+@login_required
+def news_detail_view(request, news_id):
+    news = get_object_or_404(News.objects.select_related('category'), id=news_id)
+    return render(request, 'portal/news_detail.html', {'news': news})

@@ -1,0 +1,50 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Новости{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+    <div>
+        <h1 class="h3 mb-1">Новости компании</h1>
+        <p class="text-muted mb-0">Актуальные объявления и важная информация для сотрудников.</p>
+    </div>
+</div>
+
+<div class="row g-3">
+    {% for news in news_list %}
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start gap-3">
+                        <div>
+                            <h2 class="h5 mb-2">
+                                <a class="text-decoration-none" href="{% url 'news_detail' news.id %}">
+                                    {{ news.title }}
+                                </a>
+                            </h2>
+                            <div class="small text-muted">
+                                {{ news.category|default:"Без категории" }} · {{ news.publication_date|date:"d.m.Y" }}
+                            </div>
+                        </div>
+                        {% if news.is_important %}
+                            <span class="badge text-bg-danger">Важно</span>
+                        {% endif %}
+                    </div>
+                    <p class="text-muted mt-3 mb-3">{{ news.content|truncatechars:180 }}</p>
+                    <a class="btn btn-outline-primary btn-sm" href="{% url 'news_detail' news.id %}">
+                        Читать полностью
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <p class="text-muted mb-0">Новостей пока нет.</p>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

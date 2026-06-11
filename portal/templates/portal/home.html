@@ -43,7 +43,11 @@
                 {% for news in latest_news %}
                     <div class="border-bottom pb-3 mb-3">
                         <div class="d-flex justify-content-between gap-3">
-                            <h3 class="h6 mb-1">{{ news.title }}</h3>
+                            <h3 class="h6 mb-1">
+                                <a class="text-decoration-none" href="{% url 'news_detail' news.id %}">
+                                    {{ news.title }}
+                                </a>
+                            </h3>
                             {% if news.is_important %}
                                 <span class="badge text-bg-danger">Важно</span>
                             {% endif %}

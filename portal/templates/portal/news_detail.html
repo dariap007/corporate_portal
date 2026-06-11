@@ -1,0 +1,29 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}{{ news.title }}{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+    <a class="btn btn-outline-secondary btn-sm" href="{% url 'news_list' %}">Назад к новостям</a>
+</div>
+
+<article class="card border-0 shadow-sm">
+    <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+            <div>
+                <h1 class="h3 mb-2">{{ news.title }}</h1>
+                <div class="text-muted">
+                    {{ news.category|default:"Без категории" }} · {{ news.publication_date|date:"d.m.Y" }}
+                </div>
+            </div>
+            {% if news.is_important %}
+                <span class="badge text-bg-danger">Важно</span>
+            {% endif %}
+        </div>
+
+        <div class="news-content">
+            {{ news.content|linebreaks }}
+        </div>
+    </div>
+</article>
+{% endblock %}
