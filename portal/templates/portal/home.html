@@ -84,13 +84,16 @@
 
 <div class="card border-0 shadow-sm mt-4">
     <div class="card-body">
-        <h2 class="h5 mb-3">Активные заявки</h2>
+        <h2 class="h5 mb-3">{{ active_tickets_title }}</h2>
         {% if active_tickets %}
             <div class="table-responsive">
                 <table class="table align-middle mb-0">
                     <thead>
                     <tr>
                         <th>Тема</th>
+                        {% if user.is_staff %}
+                            <th>Автор</th>
+                        {% endif %}
                         <th>Тип</th>
                         <th>Приоритет</th>
                         <th>Статус</th>
@@ -100,6 +103,9 @@
                     {% for ticket in active_tickets %}
                         <tr>
                             <td>{{ ticket.title }}</td>
+                            {% if user.is_staff %}
+                                <td>{{ ticket.author.username }}</td>
+                            {% endif %}
                             <td>{{ ticket.get_ticket_type_display }}</td>
                             <td>{{ ticket.get_priority_display }}</td>
                             <td><span class="badge text-bg-primary">{{ ticket.get_status_display }}</span></td>

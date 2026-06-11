@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import TicketForm
+from .forms import ProfileEditForm, TicketForm
 from .models import CorporateServiceLink, Department, Document, EmployeeProfile, News, Ticket
 
 
@@ -30,15 +30,23 @@ def logout_view(request):
 @login_required
 def home_view(request):
     active_statuses = [Ticket.STATUS_NEW, Ticket.STATUS_IN_PROGRESS]
-    user_tickets = Ticket.objects.filter(author=request.user)
+    if request.user.is_staff:
+        tickets = Ticket.objects.select_related('author').all()
+        active_tickets_title = 'Активные заявки сотрудников'
+    else:
+        tickets = Ticket.objects.filter(author=request.user).select_related('author')
+        active_tickets_title = 'Активные заявки'
+
+    active_tickets = tickets.filter(status__in=active_statuses)
 
     context = {
         'latest_news': News.objects.select_related('category')[:3],
         'service_links': CorporateServiceLink.objects.all()[:4],
-        'active_tickets': user_tickets.filter(status__in=active_statuses)[:5],
+        'active_tickets': active_tickets[:5],
+        'active_tickets_title': active_tickets_title,
         'news_count': News.objects.count(),
         'documents_count': Document.objects.count(),
-        'active_tickets_count': user_tickets.filter(status__in=active_statuses).count(),
+        'active_tickets_count': active_tickets.count(),
     }
     return render(request, 'portal/home.html', context)
 
@@ -133,3 +141,32 @@ def ticket_create_view(request):
         return redirect('tickets_list')
 
     return render(request, 'portal/ticket_create.html', {'form': form})
+
+
+@login_required
+def profile_view(request):
+    profile = get_object_or_404(
+        EmployeeProfile.objects.select_related('department', 'user'),
+        user=request.user,
+    )
+    latest_tickets = Ticket.objects.filter(author=request.user)[:5]
+    role_name = 'Администратор' if request.user.is_staff or request.user.is_superuser else 'Сотрудник'
+
+    context = {
+        'profile': profile,
+        'latest_tickets': latest_tickets,
+        'role_name': role_name,
+    }
+    return render(request, 'portal/profile.html', context)
+
+
+@login_required
+def profile_edit_view(request):
+    profile = get_object_or_404(EmployeeProfile, user=request.user)
+    form = ProfileEditForm(request.POST or None, instance=profile)
+
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        return redirect('profile')
+
+    return render(request, 'portal/profile_edit.html', {'form': form, 'profile': profile})

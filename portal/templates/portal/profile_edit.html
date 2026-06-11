@@ -1,0 +1,142 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Редактирование профиля{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+    <a class="btn btn-outline-secondary btn-sm" href="{% url 'profile' %}">Назад к профилю</a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <h1 class="h3 mb-1">Редактирование контактов</h1>
+                <p class="text-muted mb-4">Можно изменить только телефон и дополнительные контакты.</p>
+
+                <div class="alert alert-light border">
+                    ФИО, должность, подразделение, email и роль меняются только администратором.
+                </div>
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.phone.id_for_label }}">{{ form.phone.label }}</label>
+                        {{ form.phone }}
+                        <div class="form-text">Формат номера: +7 (999) 123-45-67</div>
+                        {{ form.phone.errors }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.additional_contact.id_for_label }}">{{ form.additional_contact.label }}</label>
+                        {{ form.additional_contact }}
+                        {{ form.additional_contact.errors }}
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a class="btn btn-outline-secondary" href="{% url 'profile' %}">Отмена</a>
+                        <button class="btn btn-primary" type="submit">Сохранить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const phoneInput = document.querySelector('[data-phone-mask="true"]');
+
+    if (phoneInput) {
+        function normalizeDigits(value) {
+            let digits = value.replace(/\D/g, '');
+            if (digits.startsWith('8')) {
+                digits = '7' + digits.slice(1);
+            }
+            if (!digits.startsWith('7')) {
+                digits = '7' + digits;
+            }
+            return digits.slice(0, 11);
+        }
+
+        function formatPhone(digits) {
+            let value = '+7';
+            if (digits.length > 1) {
+                value += ' (' + digits.slice(1, 4);
+            }
+            if (digits.length >= 4) {
+                value += ') ' + digits.slice(4, 7);
+            }
+            if (digits.length >= 7) {
+                value += '-' + digits.slice(7, 9);
+            }
+            if (digits.length >= 9) {
+                value += '-' + digits.slice(9, 11);
+            }
+            return value;
+        }
+
+        function digitIndexBeforeCursor(value, cursorPosition) {
+            return value.slice(0, cursorPosition).replace(/\D/g, '').length;
+        }
+
+        function setValueFromDigits(digits, digitCursorIndex) {
+            phoneInput.value = formatPhone(digits);
+
+            let digitCount = 0;
+            let cursorPosition = phoneInput.value.length;
+
+            for (let index = 0; index < phoneInput.value.length; index += 1) {
+                if (/\d/.test(phoneInput.value[index])) {
+                    digitCount += 1;
+                }
+
+                if (digitCount >= digitCursorIndex) {
+                    cursorPosition = index + 1;
+                    break;
+                }
+            }
+
+            phoneInput.setSelectionRange(cursorPosition, cursorPosition);
+        }
+
+        phoneInput.addEventListener('keydown', function (event) {
+            if (event.key !== 'Backspace' && event.key !== 'Delete') {
+                return;
+            }
+
+            const cursorStart = phoneInput.selectionStart;
+            const cursorEnd = phoneInput.selectionEnd;
+            const digits = normalizeDigits(phoneInput.value);
+
+            if (cursorStart !== cursorEnd) {
+                return;
+            }
+
+            if (event.key === 'Backspace' && cursorStart > 0 && /\D/.test(phoneInput.value[cursorStart - 1])) {
+                event.preventDefault();
+                const removeIndex = Math.max(digitIndexBeforeCursor(phoneInput.value, cursorStart) - 1, 1);
+                const newDigits = digits.slice(0, removeIndex) + digits.slice(removeIndex + 1);
+                setValueFromDigits(newDigits, removeIndex);
+            }
+
+            if (event.key === 'Delete' && cursorStart < phoneInput.value.length && /\D/.test(phoneInput.value[cursorStart])) {
+                event.preventDefault();
+                const removeIndex = Math.max(digitIndexBeforeCursor(phoneInput.value, cursorStart), 1);
+                const newDigits = digits.slice(0, removeIndex) + digits.slice(removeIndex + 1);
+                setValueFromDigits(newDigits, removeIndex);
+            }
+        });
+
+        phoneInput.addEventListener('input', function () {
+            const cursorDigitIndex = digitIndexBeforeCursor(phoneInput.value, phoneInput.selectionStart);
+            const digits = normalizeDigits(phoneInput.value);
+            setValueFromDigits(digits, Math.max(cursorDigitIndex, 1));
+        });
+
+        phoneInput.addEventListener('blur', function () {
+            const digits = normalizeDigits(phoneInput.value);
+            phoneInput.value = formatPhone(digits);
+        });
+    }
+</script>
+{% endblock %}
