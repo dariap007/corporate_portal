@@ -1,0 +1,42 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Изменение заявки{% endblock %}
+{% block management_title %}Изменение заявки{% endblock %}
+{% block management_description %}Администратор меняет статус заявки и добавляет комментарий для сотрудника.{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+    <div>
+        <h1 class="h3 mb-1">Изменение заявки</h1>
+        <p class="text-muted mb-0">Администратор меняет статус заявки и добавляет комментарий для сотрудника.</p>
+    </div>
+    <a class="btn btn-outline-primary" href="{% url 'tickets_list' %}">Назад к заявкам</a>
+</div>
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        <h2 class="h5">{{ ticket.title }}</h2>
+        <div class="text-muted mb-2">Автор: {{ ticket.author.username }}</div>
+        <p class="mb-0">{{ ticket.description }}</p>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="mb-3">
+                    <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+            {% endfor %}
+            <div class="d-flex justify-content-end gap-2">
+                <a class="btn btn-outline-secondary" href="{% url 'tickets_list' %}">Отмена</a>
+                <button class="btn btn-primary" type="submit">Сохранить</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
