@@ -1,0 +1,72 @@
+{% extends 'portal/base.html' %}
+
+{% block title %}Сотрудники{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h1 class="h3 mb-1">Справочник сотрудников</h1>
+    <p class="text-muted mb-0">Поиск контактов сотрудников и фильтрация по отделам.</p>
+</div>
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        <form class="row g-3" method="get">
+            <div class="col-md-6">
+                <label class="form-label" for="employee-search">ФИО сотрудника</label>
+                <input
+                    class="form-control"
+                    id="employee-search"
+                    type="search"
+                    name="q"
+                    value="{{ search_query }}"
+                    placeholder="Например: Петров"
+                >
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="department-filter">Отдел</label>
+                <select class="form-select" id="department-filter" name="department">
+                    <option value="">Все отделы</option>
+                    {% for department in departments %}
+                        <option value="{{ department.id }}" {% if selected_department == department.id|stringformat:"s" %}selected{% endif %}>
+                            {{ department.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end gap-2">
+                <button class="btn btn-primary w-100" type="submit">Найти</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row g-3">
+    {% for employee in employees %}
+        <div class="col-md-6 col-xl-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between gap-3 mb-2">
+                        <h2 class="h5 mb-0">{{ employee.full_name }}</h2>
+                        <span class="badge text-bg-light">{{ employee.get_status_display }}</span>
+                    </div>
+                    <div class="text-muted mb-3">{{ employee.position }}</div>
+                    <div class="small mb-1"><strong>Отдел:</strong> {{ employee.department|default:"Не указан" }}</div>
+                    <div class="small mb-1"><strong>Email:</strong> {{ employee.email }}</div>
+                    <div class="small mb-3"><strong>Телефон:</strong> {{ employee.phone|default:"Не указан" }}</div>
+                    <a class="btn btn-outline-primary btn-sm" href="{% url 'employee_detail' employee.id %}">
+                        Открыть карточку
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <p class="text-muted mb-0">Сотрудники не найдены. Попробуйте изменить условия поиска.</p>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

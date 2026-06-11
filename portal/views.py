@@ -84,3 +84,18 @@ def employee_detail_view(request, employee_id):
         id=employee_id,
     )
     return render(request, 'portal/employee_detail.html', {'employee': employee})
+
+
+@login_required
+def documents_list_view(request):
+    search_query = request.GET.get('q', '').strip()
+    documents = Document.objects.select_related('category').all()
+
+    if search_query:
+        documents = documents.filter(title__icontains=search_query)
+
+    context = {
+        'documents': documents,
+        'search_query': search_query,
+    }
+    return render(request, 'portal/documents_list.html', context)
