@@ -62,7 +62,6 @@
 
 ```text
 corporate_portal/
-├── AGENTS.md
 ├── README.md
 ├── manage.py
 ├── db.sqlite3
